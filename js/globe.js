@@ -13,12 +13,45 @@
 
 var DAT = DAT || {};
 
-DAT.Globe = function(container, colorFn) {
+// Used with the colour function (each subarray is an RGB tuple representing
+// the percentage out of 255)
+var COLOURS = [
+  [  0,   0, 1.0], // blue
+  [  0, 1.0,   0], // green
+  [1.0, 1.0,   0], // yellow
+  [1.0,   0,   0]  // red
+];
 
-  colorFn = colorFn || function(x) {
-    var c = new THREE.Color();
-    c.setHSL( ( ( ((x * 800) / 100.0) / 100.0 ) * 9.0 ), 1.0, 0.5 );
-    return c;
+DAT.Globe = function(container) {
+
+  // Logic for this function inspired by:
+  // http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradients
+  var colorFn =  function(x) {
+    var idx1, idx2, fractBetween, r, g, b;
+
+    // This max val was obtained by looking at the static data in main.js
+    // THIS IS NOT ROBUST!
+    x = x / 4390;
+
+    fractBetween = 0;
+    if( x <= 0 ) {
+      idx1 = 0;
+      idx2 = 0;
+    } else if( x >= 1 ) {
+      idx1 = COLOURS.length - 1;
+      idx2 = COLOURS.length - 1;
+    } else {
+      x = x * (COLOURS.length-1);
+      idx1 = Math.floor( x );
+      idx2 = idx1 + 1;
+      fractBetween = x - idx1;
+    }
+
+    r = ( COLOURS[idx2][0] - COLOURS[idx1][0] ) * fractBetween + COLOURS[idx1][0];
+    g = ( COLOURS[idx2][1] - COLOURS[idx1][1] ) * fractBetween + COLOURS[idx1][1];
+    b = ( COLOURS[idx2][2] - COLOURS[idx1][2] ) * fractBetween + COLOURS[idx1][2];
+
+    return new THREE.Color( r*255, g*255, b*255 );
   };
 
   var backgroundTexture = THREE.ImageUtils.loadTexture('../img/map.jpg');
@@ -142,7 +175,7 @@ DAT.Globe = function(container, colorFn) {
     mesh.scale.set( 1.1, 1.1, 1.1 );
     scene.add(mesh);
 
-    geometry = new THREE.CubeGeometry(0.75, 0.75, 1);
+    geometry = new THREE.BoxGeometry(0.75, 0.75, 1);
     geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,0,-0.5));
 
     point = new THREE.Mesh(geometry);
@@ -212,8 +245,7 @@ DAT.Globe = function(container, colorFn) {
       lat = data[i];
       lng = data[i + 1];
       color = colorFnWrapper(data,i);
-      size = data[i + 2];
-      size = (size * 800.0) / 100;
+      size = 0;
       addPoint(lat, lng, size, color, subgeo);
     }
     if (opts.animated) {
@@ -272,6 +304,7 @@ DAT.Globe = function(container, colorFn) {
 
     }
 
+    // subgeo.merge(point.geometry);
     THREE.GeometryUtils.merge(subgeo, point);
   }
 
