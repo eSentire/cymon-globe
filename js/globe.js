@@ -54,7 +54,7 @@ DAT.Globe = function(container) {
     return new THREE.Color( r*255, g*255, b*255 );
   };
 
-  var backgroundTexture = THREE.ImageUtils.loadTexture('../img/map.jpg');
+  var backgroundTexture = THREE.ImageUtils.loadTexture('../img/map2.jpg');
 
   var Shaders = {
     'earth' : {
