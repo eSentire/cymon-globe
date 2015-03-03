@@ -482,8 +482,12 @@ var _setMaxDataVal = function( data, format ) {
   if( format === 'magnitude' ) {
     _maxDataVal = Math.max.apply( Math, data );
   } else if( format === 'legend' ) {
-    // TODO figure out easiest way to do this
-    _maxDataVal = 0;
+    var series = [];
+    data.forEach( function( subArr ) {
+      series.push( Math.max.apply( Math, subArr[1] ) );
+    });
+
+    _maxDataVal = Math.max.apply( Math, series );
   } else {
     console.log( 'Unsupported format for _setMaxDataVal: ' + format );
     _maxDataVal = 0;
