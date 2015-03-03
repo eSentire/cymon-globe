@@ -213,10 +213,10 @@ DAT.Globe = function(container) {
     //console.log(opts.format);
     if (opts.format === 'magnitude') {
       step = 3;
-      colorFnWrapper = function(data, i) { return colorFn(data[i+2]); }
+      colorFnWrapper = function(data, i) { return colorFn(data[i+2]); };
     } else if (opts.format === 'legend') {
       step = 4;
-      colorFnWrapper = function(data, i) { return colorFn(data[i+3]); }
+      colorFnWrapper = function(data, i) { return colorFn(data[i+3]); };
     } else {
       throw('error: format not supported: '+opts.format);
     }
@@ -411,12 +411,12 @@ DAT.Globe = function(container) {
 
     rotation.x += (target.x - rotation.x) * 0.2;
 
-    if (f == true){
+    if (f === true){
       rotation.y += (target.y - rotation.y) * 0.2;}
-    if (f == false){
+    if (f === false){
       target.y = Math.PI / 5.0;
       rotation.y += (target.y - rotation.y) * 0.02;
-    };
+    }
 
     distance += (distanceTarget - distance) * 0.3;
 
