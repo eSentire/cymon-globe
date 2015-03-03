@@ -22,6 +22,9 @@ var COLOURS = [
   [1.0,   0,   0]  // red
 ];
 
+// Also used with the colour function
+var _maxDataVal = 0;
+
 DAT.Globe = function(container) {
 
   // Logic for this function inspired by:
@@ -29,9 +32,7 @@ DAT.Globe = function(container) {
   var colorFn =  function(x) {
     var idx1, idx2, fractBetween, r, g, b;
 
-    // This max val was obtained by looking at the static data in main.js
-    // THIS IS NOT ROBUST!
-    x = x / 4390;
+    x = x / _maxDataVal;
 
     fractBetween = 0;
     if( x <= 0 ) {
@@ -206,6 +207,9 @@ DAT.Globe = function(container) {
 
   addData = function(data, opts) {
     var lat, lng, size, color, i, step, colorFnWrapper;
+
+    // get ready for our colour function
+    _setMaxDataVal( data, opts.format );
 
     opts.animated = opts.animated || false;
     this.is_animated = opts.animated;
@@ -470,4 +474,18 @@ DAT.Globe = function(container) {
 
   return this;
 
+};
+
+// helper function to find the max value in an array of data (used for colour
+// interpolation in the colorFn)
+var _setMaxDataVal = function( data, format ) {
+  if( format === 'magnitude' ) {
+    _maxDataVal = Math.max.apply( Math, data );
+  } else if( format === 'legend' ) {
+    // TODO figure out easiest way to do this
+    _maxDataVal = 0;
+  } else {
+    console.log( 'Unsupported format for _setMaxDataVal: ' + format );
+    _maxDataVal = 0;
+  }
 };
