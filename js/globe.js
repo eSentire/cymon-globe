@@ -304,8 +304,9 @@ DAT.Globe = function(container) {
 
     }
 
-    // subgeo.merge(point.geometry);
-    THREE.GeometryUtils.merge(subgeo, point);
+    // Note: this method was introduced in r70 but is only documented in the
+    // release notes. Hopefully it will stick around and not break in the future
+    subgeo.mergeMesh( point );
   }
 
   function onMouseDown(event) {
