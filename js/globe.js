@@ -25,7 +25,7 @@ var COLOURS = [
 // Also used with the colour function
 var _maxDataVal = 0;
 
-DAT.Globe = function(container) {
+DAT.Globe = function(container, backgroundTexture) {
 
   // Logic for this function inspired by:
   // http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradients
@@ -54,8 +54,6 @@ DAT.Globe = function(container) {
 
     return new THREE.Color( r*255, g*255, b*255 );
   };
-
-  var backgroundTexture = THREE.ImageUtils.loadTexture('../img/map2.jpg');
 
   var Shaders = {
     'earth' : {
