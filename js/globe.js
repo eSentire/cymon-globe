@@ -189,6 +189,11 @@ DAT.Globe = function(container, backgroundTexture) {
     container.addEventListener('mousedown', onMouseDown, false);
 
     container.addEventListener('mousewheel', onMouseWheel, false);
+    // firefox mouse wheel handler
+    container.addEventListener( 'DOMMouseScroll', function(e) {
+      var evt = window.event || e;
+      onMouseWheel( evt );
+    }, false );
 
     document.addEventListener('keydown', onDocumentKeyDown, false);
 
@@ -319,7 +324,14 @@ DAT.Globe = function(container, backgroundTexture) {
   function onMouseWheel(event) {
     event.preventDefault();
     if (overRenderer) {
-      zoom(event.wheelDeltaY * 0.3);
+      var delta = 0;
+      if( event.wheelDelta ) {
+        delta = event.wheelDelta * 0.3;
+      } else if( event.detail ) {
+        delta = -event.detail * 10;
+      }
+
+      zoom(delta);
     }
     return false;
   }
