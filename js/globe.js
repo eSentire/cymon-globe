@@ -205,30 +205,25 @@ DAT.Globe = function(container) {
     }, false);
   }
 
-  addData = function(data, opts) {
-    var lat, lng, size, color, i, step, colorFnWrapper;
+  addData = function(data) {
+    var lat, lng, size, color, colorFnWrapper;
 
     // get ready for our colour function
-    _setMaxDataVal( data, opts.format );
+    _setMaxDataVal( data );
 
-    // TODO: get rid of format
-    opts.format = opts.format || 'magnitude'; // other option is 'legend'
-
-    if (opts.format === 'magnitude') {
-      step = 3;
-      colorFnWrapper = function(data, i) { return colorFn(data[i+2]); };
-    } else {
-      throw('error: format not supported: '+opts.format);
-    }
+    colorFnWrapper = function(data, i) { return colorFn(data[i+2]); };
 
     var subgeo = new THREE.Geometry();
-    for (i = 0; i < data.length; i += step) {
-      lat = data[i];
-      lng = data[i + 1];
-      color = colorFnWrapper(data,i);
-      size = 0;
-      addPoint(lat, lng, size, color, subgeo);
-    }
+
+    data.forEach( function( series ) {
+      for( var i = 0; i < series[1].length; i += 3 ) {
+        lat = series[1][i];
+        lng = series[1][i + 1];
+        color = colorFnWrapper(series[1],i);
+        size = 0;
+        addPoint(lat, lng, size, color, subgeo);
+      }
+    });
     this._baseGeometry = subgeo;
   };
 
@@ -434,17 +429,10 @@ DAT.Globe = function(container) {
 // helper function to find the max value in an array of data (used for colour
 // interpolation in the colorFn)
 var _setMaxDataVal = function( data, format ) {
-  if( format === 'magnitude' ) {
-    _maxDataVal = Math.max.apply( Math, data );
-  } else if( format === 'legend' ) {
-    var series = [];
-    data.forEach( function( subArr ) {
-      series.push( Math.max.apply( Math, subArr[1] ) );
-    });
+  var series = [];
+  data.forEach( function( subArr ) {
+    series.push( Math.max.apply( Math, subArr[1] ) );
+  });
 
-    _maxDataVal = Math.max.apply( Math, series );
-  } else {
-    console.log( 'Unsupported format for _setMaxDataVal: ' + format );
-    _maxDataVal = 0;
-  }
+  _maxDataVal = Math.max.apply( Math, series );
 };

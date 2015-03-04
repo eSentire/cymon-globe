@@ -10,7 +10,7 @@ $(function() {
 
         var globe = DAT.Globe(container);
 
-        globe.addData( response[1], {format: 'magnitude', name: 'Security Events'} );
+        globe.addData( response );
         globe.createPoints();
         globe.animate();
       })
