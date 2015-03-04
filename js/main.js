@@ -3,14 +3,14 @@ $(function() {
     Detector.addGetWebGLMessage();
   } else {
     // Fetch our data
-    $.ajax( 'data-magnitude.json' )
+    $.ajax( { url: 'data-magnitude.json', dataType: 'json' } )
       .done( function( response ) {
         THREE.ImageUtils.crossOrigin = '';
         var container = document.getElementById('globe');
 
         var globe = DAT.Globe(container);
 
-        globe.addData( response, {format: 'magnitude', name: 'Security Events'} );
+        globe.addData( response[1], {format: 'magnitude', name: 'Security Events'} );
         globe.createPoints();
         globe.animate();
       })
