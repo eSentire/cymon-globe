@@ -143,8 +143,6 @@ class Globe
       onMouseWheel evt
     , false )
 
-    document.addEventListener('keydown', @onDocumentKeyDown, false)
-
     @container.addEventListener('mouseover', ->
       @overRenderer = true
     , false)
@@ -262,20 +260,6 @@ class Globe
       @zoom delta
 
     return false
-
-  onDocumentKeyDown: (event) ->
-    switch event.keyCode
-      when 38
-        @zoom 100
-        event.preventDefault()
-      when 40
-        @zoom -100
-        event.preventDefault()
-
-  onWindowResize: ( event ) ->
-    @camera.aspect = window.innerWidth / window.innerHeight
-    @camera.updateProjectionMatrix()
-    @renderer.setSize( window.innerWidth, window.innerHeight )
 
   zoom: (delta) ->
     @distanceTarget -= delta
