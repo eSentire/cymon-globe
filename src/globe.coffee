@@ -208,9 +208,9 @@ class Globe
     @k = 0
     @f = true
 
-    @container.addEventListener('mousemove', onMouseMove, false)
-    @container.addEventListener('mouseup', onMouseUp, false)
-    @container.addEventListener('mouseout', onMouseOut, false)
+    @container.addEventListener('mousemove', @onMouseMove, false)
+    @container.addEventListener('mouseup', @onMouseUp, false)
+    @container.addEventListener('mouseout', @onMouseOut, false)
 
     @target.y = @rotation.y
     @mouseOnDown.x = - event.clientX
@@ -237,18 +237,18 @@ class Globe
     @k = ROTATIONSPEED
     @f = false
 
-    @container.removeEventListener('mousemove', onMouseMove, false)
-    @container.removeEventListener('mouseup', onMouseUp, false)
-    @container.removeEventListener('mouseout', onMouseOut, false)
+    @container.removeEventListener('mousemove', @onMouseMove, false)
+    @container.removeEventListener('mouseup', @onMouseUp, false)
+    @container.removeEventListener('mouseout', @onMouseOut, false)
     @container.style.cursor = 'auto'
 
   onMouseOut: (event) ->
     @k = ROTATIONSPEED
     @f = false
 
-    @container.removeEventListener('mousemove', onMouseMove, false)
-    @container.removeEventListener('mouseup', onMouseUp, false)
-    @container.removeEventListener('mouseout', onMouseOut, false)
+    @container.removeEventListener('mousemove', @onMouseMove, false)
+    @container.removeEventListener('mouseup', @onMouseUp, false)
+    @container.removeEventListener('mouseout', @onMouseOut, false)
 
   onMouseWheel: (event) ->
     event.preventDefault()
@@ -279,8 +279,8 @@ class Globe
 
   zoom: (delta) ->
     @distanceTarget -= delta
-    @distanceTarget = @distanceTarget > 1100 ? 1100 : @distanceTarget
-    @distanceTarget = @distanceTarget < 350 ? 350 : @distanceTarget
+    @distanceTarget = if @distanceTarget > 1100 then 1100 else @distanceTarget
+    @distanceTarget = if @distanceTarget < 350 then 350 else @distanceTarget
 
   render: ->
     @zoom 0
