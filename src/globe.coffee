@@ -23,7 +23,7 @@ COLOURS = [
 _maxDataVal = 0
 
 module.exports =
-  createGlobe: ( container, texture )->
+  createGlobe: ( container, texture ) ->
     return new Globe container, texture
 
 # variables static to the Globe class
@@ -75,6 +75,8 @@ class Globe
     # Define instance variables
     @mouse = { x: 0, y: 0 }
     @mouseOnDown = { x: 0, y: 0 }
+    @inMouseDrag = false
+    @overRenderer = false
     @rotation = { x: 0, y: 0 }
     @target = { x: Math.PI*1.7, y: Math.PI / 5.0 }
     @targetOnDown = { x: 0, y: 0 }
@@ -135,6 +137,9 @@ class Globe
 
     @container.appendChild(@renderer.domElement)
 
+    @container.addEventListener('mousemove', @onMouseMove, false)
+    @container.addEventListener('mouseup', @onMouseUp, false)
+    @container.addEventListener('mouseout', @onMouseOut, false)
     @container.addEventListener('mousedown', @onMouseDown, false)
     @container.addEventListener('mousewheel', @onMouseWheel, false)
     # firefox mouse wheel handler
@@ -143,11 +148,11 @@ class Globe
       onMouseWheel evt
     , false )
 
-    @container.addEventListener('mouseover', ->
+    @container.addEventListener('mouseover', =>
       @overRenderer = true
     , false)
 
-    @container.addEventListener('mouseout', ->
+    @container.addEventListener('mouseout', =>
       @overRenderer = false
     , false)
 
@@ -200,26 +205,28 @@ class Globe
     # release notes. Hopefully it will stick around and not break in the future
     subgeo.mergeMesh @point
 
-  onMouseDown: (event) ->
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Event Handlers
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  onMouseDown: (event) =>
     event.preventDefault()
 
     @k = 0
     @f = true
-
-    @container.addEventListener('mousemove', @onMouseMove, false)
-    @container.addEventListener('mouseup', @onMouseUp, false)
-    @container.addEventListener('mouseout', @onMouseOut, false)
+    @inMouseDrag = true
 
     @target.y = @rotation.y
-    @mouseOnDown.x = - event.clientX
+    @mouseOnDown.x = -event.clientX
     @mouseOnDown.y = event.clientY
 
-    @targetOnDown.x = target.x
-    @targetOnDown.y = target.y
+    @targetOnDown.x = @target.x
+    @targetOnDown.y = @target.y
 
     @container.style.cursor = 'move'
 
-  onMouseMove: (event) ->
+  onMouseMove: (event) =>
+    if not @inMouseDrag then return
+
     @mouse.x = -event.clientX
     @mouse.y = event.clientY
 
@@ -228,28 +235,28 @@ class Globe
     @target.x = @targetOnDown.x + (@mouse.x - @mouseOnDown.x) * 0.005 * zoomDamp
     @target.y = @targetOnDown.y + (@mouse.y - @mouseOnDown.y) * 0.005 * zoomDamp
 
-    @target.y = @target.y > PI_HALF ? PI_HALF : @target.y
-    @target.y = @target.y < - PI_HALF ? -PI_HALF : @target.y
+    @target.y = if @target.y > PI_HALF then PI_HALF else @target.y
+    @target.y = if @target.y < - PI_HALF then -PI_HALF else @target.y
 
-  onMouseUp: (event) ->
+  onMouseUp: (event) =>
+    if not @inMouseDrag then return
+
     @k = ROTATIONSPEED
     @f = false
 
-    @container.removeEventListener('mousemove', @onMouseMove, false)
-    @container.removeEventListener('mouseup', @onMouseUp, false)
-    @container.removeEventListener('mouseout', @onMouseOut, false)
+    @inMouseDrag = false
     @container.style.cursor = 'auto'
 
-  onMouseOut: (event) ->
+  onMouseOut: (event) =>
+    if not @inMouseDrag then return
+
     @k = ROTATIONSPEED
     @f = false
+    @inMouseDrag = false
 
-    @container.removeEventListener('mousemove', @onMouseMove, false)
-    @container.removeEventListener('mouseup', @onMouseUp, false)
-    @container.removeEventListener('mouseout', @onMouseOut, false)
-
-  onMouseWheel: (event) ->
+  onMouseWheel: (event) =>
     event.preventDefault()
+    console.log @overRenderer
     if @overRenderer
       delta = 0
       if event.wheelDelta
@@ -261,6 +268,9 @@ class Globe
 
     return false
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Render-related Methods
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   zoom: (delta) ->
     @distanceTarget -= delta
     @distanceTarget = if @distanceTarget > 1100 then 1100 else @distanceTarget
@@ -286,6 +296,10 @@ class Globe
     @camera.lookAt @mesh.position
 
     @renderer.render( @scene, @camera )
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Private Helper Methods
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Logic for this function inspired by:
 # http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradients
