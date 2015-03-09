@@ -8,7 +8,7 @@ body {
   background: #000000 url(../img/loading.gif) center center no-repeat;
   color: #ffffff;
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   height: 100%;
 }
@@ -32,4 +32,58 @@ body {
 
 .globe-logo img {
     max-width: 280px;
+}
+
+.series-selector {
+  position: absolute;
+  left: 40px;
+  top: 40%;
+}
+
+.series-header {
+  font-size: 18px;
+}
+
+.series-selector ul {
+  margin: 0;
+  padding: 0;
+}
+
+.series {
+  list-style-type: none;
+  margin: 0 0 -1px 0;
+  padding: 3px;
+  border: 1px solid #555; /* Fallback */
+  border: 1px solid rgba( 85, 85, 85, 0.5 );
+  min-width: 150px;
+}
+
+.series a {
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+.series a:hover { color:#008EAF; }
+
+.series:first-child {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.series:last-child {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.series .series-percent {
+  height: 20px;
+  display: inline-block;
+  position: absolute;
+  left: 3px;
+  max-width: 150px;
+  background-color: #008EAF; /* Fallback */
+  background-color: rgba( 0, 142, 175, 0.25 );
 }
