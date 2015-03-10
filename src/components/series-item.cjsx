@@ -70,5 +70,5 @@ module.exports = React.createClass
 
     <li style={@seriesItemStyle} className="series">
       <a style={@seriesToggleLinkStyle} onClick={@handleLinkClick} href="#">Sample series</a>
-      <div style={@progressBarStyle} ariaValuenow={ariaValue} ariaValuemin="0" ariaValuemax="100"></div>
+      <div style={@progressBarStyle} aria-value-now={ariaValue} aria-value-min="0" aria-value-max="100"></div>
     </li>
