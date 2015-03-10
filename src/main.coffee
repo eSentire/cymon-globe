@@ -6,6 +6,17 @@ $ ->
   if not Detector.webgl
     Detector.addGetWebGLMessage()
   else
+    # Set up legend click handlers
+    $( '.series a' ).click ->
+      $( this ).toggleClass 'inactive'
+
+      progressBar = $(this).next()
+      toggleWidth = progressBar.data 'toggle-width'
+      oldWidth = progressBar.css 'width'
+
+      progressBar.css( 'width', toggleWidth )
+      progressBar.data( 'toggle-width', oldWidth )
+
     # Fetch data from the server
     $.ajax
       url: 'data-magnitude.json'
