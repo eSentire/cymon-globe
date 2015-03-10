@@ -40,10 +40,6 @@ body {
   top: 40%;
 }
 
-.inactive {
-  color: #555;
-}
-
 .series:first-child {
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;

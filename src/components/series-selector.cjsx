@@ -56,12 +56,12 @@ SeriesSelector = React.createClass
     <div>
       <h2 style={headerStyle}>Threat Types</h2>
       <ul style={seriesListStyle}>
-        <li style={seriesItemStyle}><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="25" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
-        <li style={seriesItemStyle}><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="40" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
-        <li style={seriesItemStyle}><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="66" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
-        <li style={seriesItemStyle}><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="75" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
-        <li style={seriesItemStyle}><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="90" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
-        <li style={seriesItemStyle}><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="38" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
+        <li style={seriesItemStyle} className="series"><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="25" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
+        <li style={seriesItemStyle} className="series"><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="40" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
+        <li style={seriesItemStyle} className="series"><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="66" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
+        <li style={seriesItemStyle} className="series"><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="75" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
+        <li style={seriesItemStyle} className="series"><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="90" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
+        <li style={seriesItemStyle} className="series"><a style={seriesToggleLinkStyle} href="#">Sample series</a><div ariaValuenow="38" ariaValuemin="0" ariaValuemax="100" style={progressBarStyle} dataToggleWidth="0"></div></li>
       </ul>
     </div>
 
