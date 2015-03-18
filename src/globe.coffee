@@ -143,9 +143,9 @@ class Globe
     @container.addEventListener('mousedown', @onMouseDown, false)
     @container.addEventListener('mousewheel', @onMouseWheel, false)
     # firefox mouse wheel handler
-    @container.addEventListener( 'DOMMouseScroll', (e) ->
+    @container.addEventListener( 'DOMMouseScroll', (e) =>
       evt = window.event or e
-      onMouseWheel evt
+      @onMouseWheel evt
     , false )
 
     @container.addEventListener('mouseover', =>
@@ -256,7 +256,6 @@ class Globe
 
   onMouseWheel: (event) =>
     event.preventDefault()
-    console.log @overRenderer
     if @overRenderer
       delta = 0
       if event.wheelDelta
