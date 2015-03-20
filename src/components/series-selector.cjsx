@@ -27,7 +27,7 @@ SeriesSelector = React.createClass
       </ul>
     </div>
 
-#React.render(
-#  <SeriesSelector />
-#  document.getElementById 'series-selector'
-#)
+React.render(
+ <SeriesSelector />
+ document.getElementById 'series-selector'
+)
