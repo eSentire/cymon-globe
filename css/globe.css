@@ -8,7 +8,7 @@ body {
   background: #000000 url(../img/loading.gif) center center no-repeat;
   color: #ffffff;
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   height: 100%;
 }
@@ -32,4 +32,20 @@ body {
 
 .globe-logo img {
     max-width: 280px;
+}
+
+#series-selector {
+  position: absolute;
+  left: 40px;
+  top: 40%;
+}
+
+.series:first-child {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.series:last-child {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
 }
