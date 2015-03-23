@@ -8,7 +8,7 @@ $ ->
   else
     # Fetch data from the server
     $.ajax
-      url: 'data-legend.json'
+      url: 'http://cymon.io/api/publicajax/nexus/globe/?categories=1'
       dataType: 'json'
       error: ( jqXHR, textStatus, errorThrown ) ->
         alert "Could not load data. Reason: #{textStatus}"
