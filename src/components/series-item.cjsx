@@ -22,6 +22,7 @@ module.exports = React.createClass
     width: '100%'
     position: 'relative'
     zIndex: 10
+    textTransform: 'capitalize'
 
     # Transition for when we become inactive
     WebkitTransition: 'color 500ms ease-out'
@@ -69,6 +70,6 @@ module.exports = React.createClass
       @progressBarStyle.width = '0'
 
     <li style={@seriesItemStyle} className="series">
-      <a style={@seriesToggleLinkStyle} onClick={@handleLinkClick} href="#">Sample series</a>
+      <a style={@seriesToggleLinkStyle} onClick={@handleLinkClick} href="#">{@props.name}</a>
       <div style={@progressBarStyle} aria-value-now={ariaValue} aria-value-min="0" aria-value-max="100"></div>
     </li>

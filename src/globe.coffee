@@ -82,6 +82,8 @@ class Globe
     @target = { x: Math.PI*1.7, y: Math.PI / 5.0 }
     @targetOnDown = { x: 0, y: 0 }
 
+    @_seriesCategories = []
+
     @distance = 100000
     @distanceTarget = 100000
 
@@ -166,8 +168,10 @@ class Globe
     colorFnWrapper = (data, i) -> return _colorFn(data[i+2])
 
     subgeo = new THREE.Geometry()
+    @_seriesCategories = []
 
     for series in data
+      @_seriesCategories.push series[0] # add to our list of series for the legend
       for point, i in series[1] by 3
         lat = series[1][i]
         lng = series[1][i + 1]
@@ -207,10 +211,9 @@ class Globe
     subgeo.mergeMesh @point
 
   initLegend: ->
-    # TODO: extract categories
     React.render(
       React.createElement( SeriesSelector,
-        series: {} # TODO extract these
+        series: @_seriesCategories
       )
       document.getElementById 'series-selector'
     )

@@ -19,10 +19,8 @@ module.exports = React.createClass
     <div>
       <h2 style={@headerStyle}>Threat Types</h2>
       <ul style={@seriesListStyle}>
-        <SeriesItem percentage="10"/>
-        <SeriesItem percentage="66"/>
-        <SeriesItem percentage="42"/>
-        <SeriesItem percentage="75"/>
-        <SeriesItem percentage="50"/>
+        { @props.series.map ( item ) ->
+          return <SeriesItem name={item} percentage="50"/>
+        }
       </ul>
     </div>
