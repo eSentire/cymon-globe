@@ -8,7 +8,7 @@ $ ->
   else
     # Fetch data from the server
     $.ajax
-      url: 'data-magnitude.json'
+      url: 'data-legend.json'
       dataType: 'json'
       error: ( jqXHR, textStatus, errorThrown ) ->
         alert "Could not load data. Reason: #{textStatus}"
@@ -18,7 +18,7 @@ $ ->
         THREE.ImageUtils.loadTexture( '../img/map2.jpg', undefined, ( texture ) ->
           globe = DAT.createGlobe container, texture
 
-          globe.addData response
+          globe.addData response.data
           globe.createPoints()
           doAnimate()
         )
