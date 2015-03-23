@@ -9,6 +9,7 @@
 #
 # http://www.apache.org/licenses/LICENSE-2.0
 
+SeriesSelector = require './components/series-selector'
 
 # Used with the colour function (each subarray is an RGB tuple representing
 # the percentage out of 255)
@@ -204,6 +205,15 @@ class Globe
     # Note: this method was introduced in r70 but is only documented in the
     # release notes. Hopefully it will stick around and not break in the future
     subgeo.mergeMesh @point
+
+  initLegend: ->
+    # TODO: extract categories
+    React.render(
+      React.createElement( SeriesSelector,
+        series: {} # TODO extract these
+      )
+      document.getElementById 'series-selector'
+    )
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Event Handlers

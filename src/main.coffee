@@ -20,6 +20,7 @@ $ ->
 
           globe.addData response.data
           globe.createPoints()
+          globe.initLegend()
           doAnimate()
         )
 
