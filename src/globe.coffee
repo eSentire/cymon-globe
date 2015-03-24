@@ -75,6 +75,8 @@ class Globe
     @target = { x: Math.PI*1.7, y: Math.PI / 5.0 }
     @targetOnDown = { x: 0, y: 0 }
 
+    @seriesGeos = {}
+
     # Properties for the Legend. Object is of the form:
     # [
     #   { name: <str>, numHits: <num> },
@@ -168,11 +170,11 @@ class Globe
       colourVals = utils.colourMap( data[i+2], _seriesMaximums[ _seriesWithMaxDataVal ] )
       return new THREE.Color( colourVals.r, colourVals.g, colourVals.b )
 
-    subgeo = new THREE.Geometry()
     @_legendState = []
     @_totalHits = 0
 
     for series in data
+      subgeo = new THREE.Geometry()
       seriesTotal = 0
       for point, i in series[1] by 3
         lat = series[1][i]
@@ -180,23 +182,23 @@ class Globe
         color = colorFnWrapper(series[1],i)
         seriesTotal += series[1][i+2]
         @addPoint(lat, lng, 0, color, subgeo)
+
       # Add to our Legend state
       @_legendState.push
         name: series[0]
         numHits: seriesTotal
       @_totalHits += seriesTotal
 
-    @_baseGeometry = subgeo
-    return
-
-  createPoints: ->
-    if @_baseGeometry?
-      @points = new THREE.Mesh( @_baseGeometry, new THREE.MeshBasicMaterial
+      # Add to our list of series geometries
+      points = new THREE.Mesh( subgeo, new THREE.MeshBasicMaterial
         color: 0xffffff
         vertexColors: THREE.FaceColors
         morphTargets: false
       )
-      @scene.add @points
+      @seriesGeos[ series[0] ] = points
+      @scene.add points
+
+    return
 
   addPoint: (lat, lng, size, color, subgeo) ->
     phi = (90 - lat) * Math.PI / 180
@@ -223,7 +225,7 @@ class Globe
       React.createElement( SeriesSelector,
         series: @_legendState
         totalHits: @_totalHits
-        toggleHandler: _handleSeriesToggle
+        toggleHandler: @onLegendToggle
       )
       document.getElementById 'series-selector'
     )
@@ -290,6 +292,15 @@ class Globe
 
     return false
 
+  onLegendToggle: ( name, active ) =>
+    if !active
+      @scene.remove @seriesGeos[ name ]
+    else
+      @scene.add @seriesGeos[ name ]
+
+    # TODO: tween the add/remove... for coolness
+    # TODO: recalculate all point colours based on the (potentially) new max data val
+
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Render-related Methods
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -336,9 +347,3 @@ _setMaxDataVal = ( data ) ->
       _seriesWithMaxDataVal = subArr[0]
 
   return
-
-_handleSeriesToggle = ( name, isActive ) ->
-  console.log 'toggling series'
-
-  # TODO: add/remove series based on isActive
-  # TODO: recalculate all point colours based on the (potentially) new max data val

@@ -19,7 +19,6 @@ $ ->
           globe = DAT.createGlobe container, texture
 
           globe.addData response.data
-          globe.createPoints()
           globe.initLegend()
           doAnimate()
         )
