@@ -80,6 +80,7 @@ class Globe
     #   ...
     # ]
     @_legendState = []
+    @_totalHits = 0
 
     @distance = 100000
     @distanceTarget = 100000
@@ -168,6 +169,7 @@ class Globe
 
     subgeo = new THREE.Geometry()
     @_legendState = []
+    @_totalHits = 0
 
     for series in data
       seriesTotal = 0
@@ -181,6 +183,7 @@ class Globe
       @_legendState.push
         name: series[0]
         numHits: seriesTotal
+      @_totalHits += seriesTotal
 
     @_baseGeometry = subgeo
     return
@@ -218,6 +221,7 @@ class Globe
     React.render(
       React.createElement( SeriesSelector,
         series: @_legendState
+        totalHits: @_totalHits
       )
       document.getElementById 'series-selector'
     )

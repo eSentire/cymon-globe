@@ -47,15 +47,6 @@ module.exports = React.createClass
     transition:       'width 500ms linear'
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Behaviours
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  getInitialState: ->
-    return {active: true}
-
-  handleLinkClick: ->
-    @setState { active: !@state.active }
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Final Render
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   render: ->
@@ -64,7 +55,7 @@ module.exports = React.createClass
     colourTuple = utils.colourMap( @props.percentage, 100 )
     @progressBarStyle.backgroundColor = "rgba( #{colourTuple.r}, #{colourTuple.g}, #{colourTuple.b}, 0.5 )"
 
-    if @state.active
+    if @props.active
       @seriesToggleLinkStyle.color = '#fff'
       @progressBarStyle.width = @props.percentage + '%'
       ariaValue = @props.percentage
@@ -73,6 +64,6 @@ module.exports = React.createClass
       @progressBarStyle.width = '0'
 
     <li style={@seriesItemStyle} className="series">
-      <a style={@seriesToggleLinkStyle} onClick={@handleLinkClick} href="#">{@props.name}</a>
+      <a style={@seriesToggleLinkStyle} onClick={@props.toggleHandler} href="#">{@props.name}</a>
       <div style={@progressBarStyle} aria-value-now={ariaValue} aria-value-min="0" aria-value-max="100"></div>
     </li>
