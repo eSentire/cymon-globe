@@ -25,6 +25,7 @@ module.exports = React.createClass
     position: 'relative'
     zIndex: 10
     textTransform: 'capitalize'
+    cursor: 'pointer'
 
     # Transition for when we become inactive
     WebkitTransition: 'color 500ms ease-out'
@@ -64,6 +65,6 @@ module.exports = React.createClass
       @progressBarStyle.width = '0'
 
     <li style={@seriesItemStyle} className="series">
-      <a style={@seriesToggleLinkStyle} onClick={@props.toggleHandler} href="#">{@props.name}</a>
+      <span style={@seriesToggleLinkStyle} onClick={@props.toggleHandler} role="checkbox" aria-checked={@props.active}>{@props.name}</span>
       <div style={@progressBarStyle} aria-value-now={ariaValue} aria-value-min="0" aria-value-max="100"></div>
     </li>
