@@ -32,4 +32,8 @@ module.exports =
     g = ( COLOURS[idx2][1] - COLOURS[idx1][1] ) * fractBetween + COLOURS[idx1][1]
     b = ( COLOURS[idx2][2] - COLOURS[idx1][2] ) * fractBetween + COLOURS[idx1][2]
 
-    return { r: r*255, g: g*255, b: b*255 }
+    return {
+      r: Math.floor( r*255 )
+      g: Math.floor( g*255 )
+      b: Math.floor( b*255 )
+    }

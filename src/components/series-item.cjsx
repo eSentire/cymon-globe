@@ -1,5 +1,7 @@
 # Component representing an individual series
 
+utils = require '../utils'
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # <SeriesItem /> Component definition
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,8 +39,6 @@ module.exports = React.createClass
     position: 'absolute'
     left: 3
     maxWidth: 150
-    backgroundColor: '#008EAF' # Fallback
-    backgroundColor: 'rgba( 0, 142, 175, 0.5 )'
 
     # Transition for when we become inactive
     WebkitTransition: 'width 500ms linear'
@@ -60,6 +60,9 @@ module.exports = React.createClass
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   render: ->
     ariaValue = 0
+
+    colourTuple = utils.colourMap( @props.percentage, 100 )
+    @progressBarStyle.backgroundColor = "rgba( #{colourTuple.r}, #{colourTuple.g}, #{colourTuple.b}, 0.5 )"
 
     if @state.active
       @seriesToggleLinkStyle.color = '#fff'
