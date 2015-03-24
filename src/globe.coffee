@@ -75,13 +75,11 @@ class Globe
     @targetOnDown = { x: 0, y: 0 }
 
     # Properties for the Legend. Object is of the form:
-    # {
-    #   totalHits: <num>
-    #   categories: [
-    #     { name: <str>, numHits: <num> }
-    #   ]
-    # }
-    @_seriesCategories = []
+    # [
+    #   { name: <str>, numHits: <num> },
+    #   ...
+    # ]
+    @_legendState = []
 
     @distance = 100000
     @distanceTarget = 100000
@@ -169,15 +167,20 @@ class Globe
       return new THREE.Color( colourVals.r, colourVals.g, colourVals.b )
 
     subgeo = new THREE.Geometry()
-    @_seriesCategories = []
+    @_legendState = []
 
     for series in data
-      @_seriesCategories.push series[0] # add to our list of series for the legend
+      seriesTotal = 0
       for point, i in series[1] by 3
         lat = series[1][i]
         lng = series[1][i + 1]
         color = colorFnWrapper(series[1],i)
+        seriesTotal += series[1][i+2]
         @addPoint(lat, lng, 0, color, subgeo)
+      # Add to our Legend state
+      @_legendState.push
+        name: series[0]
+        numHits: seriesTotal
 
     @_baseGeometry = subgeo
     return
@@ -214,7 +217,7 @@ class Globe
   initLegend: ->
     React.render(
       React.createElement( SeriesSelector,
-        series: @_seriesCategories
+        series: @_legendState
       )
       document.getElementById 'series-selector'
     )
