@@ -10,15 +10,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 SeriesSelector = require './components/series-selector'
-
-# Used with the colour function (each subarray is an RGB tuple representing
-# the percentage out of 255)
-COLOURS = [
-  [  0,   0, 1.0], # blue
-  [  0, 1.0,   0], # green
-  [1.0, 1.0,   0], # yellow
-  [1.0,   0,   0]  # red
-]
+utils = require './utils'
 
 # Also used with the colour function
 _maxDataVal = 0
@@ -82,6 +74,13 @@ class Globe
     @target = { x: Math.PI*1.7, y: Math.PI / 5.0 }
     @targetOnDown = { x: 0, y: 0 }
 
+    # Properties for the Legend. Object is of the form:
+    # {
+    #   totalHits: <num>
+    #   categories: [
+    #     { name: <str>, numHits: <num> }
+    #   ]
+    # }
     @_seriesCategories = []
 
     @distance = 100000
@@ -165,7 +164,9 @@ class Globe
     # get ready for our colour function
     _setMaxDataVal data
 
-    colorFnWrapper = (data, i) -> return _colorFn(data[i+2])
+    colorFnWrapper = (data, i) ->
+      colourVals = utils.colourMap( data[i+2], _maxDataVal )
+      return new THREE.Color( colourVals.r, colourVals.g, colourVals.b )
 
     subgeo = new THREE.Geometry()
     @_seriesCategories = []
@@ -312,30 +313,6 @@ class Globe
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Private Helper Methods
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# Logic for this function inspired by:
-# http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradients
-_colorFn = (x) ->
-  x = x / _maxDataVal
-
-  fractBetween = 0
-  if x <= 0
-    idx1 = 0
-    idx2 = 0
-  else if x >= 1
-    idx1 = COLOURS.length - 1
-    idx2 = COLOURS.length - 1
-  else
-    x = x * (COLOURS.length-1)
-    idx1 = Math.floor x
-    idx2 = idx1 + 1
-    fractBetween = x - idx1
-
-  r = ( COLOURS[idx2][0] - COLOURS[idx1][0] ) * fractBetween + COLOURS[idx1][0]
-  g = ( COLOURS[idx2][1] - COLOURS[idx1][1] ) * fractBetween + COLOURS[idx1][1]
-  b = ( COLOURS[idx2][2] - COLOURS[idx1][2] ) * fractBetween + COLOURS[idx1][2]
-
-  return new THREE.Color( r*255, g*255, b*255 )
 
 # helper function to find the max value in an array of data (used for colour
 # interpolation in the colorFn)
