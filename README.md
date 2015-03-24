@@ -1,5 +1,9 @@
 # cymon-globe
-Cymon data visualization using WebGL-Globe
+3D globe visualization of cybersecurity reports collected by [Cymon](http://cymon.io) using [WebGL-Globe](https://github.com/dataarts/webgl-globe)
+
+Demo:
+
+[cymon.io/globe](http://cymon.io/globe)
 
 ## Building
 
