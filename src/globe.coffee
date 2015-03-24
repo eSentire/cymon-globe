@@ -13,7 +13,8 @@ SeriesSelector = require './components/series-selector'
 utils = require './utils'
 
 # Also used with the colour function
-_maxDataVal = 0
+_seriesWithMaxDataVal = ''
+_seriesMaximums = {} # format: { <name>: <max val> }
 
 module.exports =
   createGlobe: ( container, texture ) ->
@@ -164,7 +165,7 @@ class Globe
     _setMaxDataVal data
 
     colorFnWrapper = (data, i) ->
-      colourVals = utils.colourMap( data[i+2], _maxDataVal )
+      colourVals = utils.colourMap( data[i+2], _seriesMaximums[ _seriesWithMaxDataVal ] )
       return new THREE.Color( colourVals.r, colourVals.g, colourVals.b )
 
     subgeo = new THREE.Geometry()
@@ -222,6 +223,7 @@ class Globe
       React.createElement( SeriesSelector,
         series: @_legendState
         totalHits: @_totalHits
+        toggleHandler: _handleSeriesToggle
       )
       document.getElementById 'series-selector'
     )
@@ -323,9 +325,20 @@ class Globe
 
 # helper function to find the max value in an array of data (used for colour
 # interpolation in the colorFn)
-_setMaxDataVal = ( data, format ) ->
-  series = []
+_setMaxDataVal = ( data ) ->
+  currMax = 0
   for subArr in data
-    series.push( Math.max.apply( Math, subArr[1] ) )
+    seriesMax = Math.max.apply( Math, subArr[1] )
+    _seriesMaximums[ subArr[0] ] = seriesMax
 
-  _maxDataVal = Math.max.apply( Math, series )
+    if seriesMax > currMax
+      currMax = seriesMax
+      _seriesWithMaxDataVal = subArr[0]
+
+  return
+
+_handleSeriesToggle = ( name, isActive ) ->
+  console.log 'toggling series'
+
+  # TODO: add/remove series based on isActive
+  # TODO: recalculate all point colours based on the (potentially) new max data val

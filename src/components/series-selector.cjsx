@@ -39,6 +39,9 @@ module.exports = React.createClass
 
     @setState newState
 
+    # call up into the globe to toggle the data display
+    @props.toggleHandler name, newState[name]
+
   render: ->
     activeHits = @props.totalHits
 
