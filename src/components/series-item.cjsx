@@ -1,5 +1,7 @@
 # Component representing an individual series
 
+utils = require '../utils'
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # <SeriesItem /> Component definition
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,6 +24,8 @@ module.exports = React.createClass
     width: '100%'
     position: 'relative'
     zIndex: 10
+    textTransform: 'capitalize'
+    cursor: 'pointer'
 
     # Transition for when we become inactive
     WebkitTransition: 'color 500ms ease-out'
@@ -36,8 +40,6 @@ module.exports = React.createClass
     position: 'absolute'
     left: 3
     maxWidth: 150
-    backgroundColor: '#008EAF' # Fallback
-    backgroundColor: 'rgba( 0, 142, 175, 0.5 )'
 
     # Transition for when we become inactive
     WebkitTransition: 'width 500ms linear'
@@ -46,21 +48,15 @@ module.exports = React.createClass
     transition:       'width 500ms linear'
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Behaviours
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  getInitialState: ->
-    return {active: true}
-
-  handleLinkClick: ->
-    @setState { active: !@state.active }
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Final Render
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   render: ->
     ariaValue = 0
 
-    if @state.active
+    colourTuple = utils.colourMap( @props.percentage, 100 )
+    @progressBarStyle.backgroundColor = "rgba( #{colourTuple.r}, #{colourTuple.g}, #{colourTuple.b}, 0.5 )"
+
+    if @props.active
       @seriesToggleLinkStyle.color = '#fff'
       @progressBarStyle.width = @props.percentage + '%'
       ariaValue = @props.percentage
@@ -69,6 +65,6 @@ module.exports = React.createClass
       @progressBarStyle.width = '0'
 
     <li style={@seriesItemStyle} className="series">
-      <a style={@seriesToggleLinkStyle} onClick={@handleLinkClick} href="#">Sample series</a>
+      <span style={@seriesToggleLinkStyle} onClick={@props.toggleHandler} role="checkbox" aria-checked={@props.active}>{@props.name}</span>
       <div style={@progressBarStyle} aria-value-now={ariaValue} aria-value-min="0" aria-value-max="100"></div>
     </li>

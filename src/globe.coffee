@@ -8,19 +8,14 @@
 # You may obtain a copy of the License at
 #
 # http://www.apache.org/licenses/LICENSE-2.0
+TWEEN = require 'tween.js'
 
-
-# Used with the colour function (each subarray is an RGB tuple representing
-# the percentage out of 255)
-COLOURS = [
-  [  0,   0, 1.0], # blue
-  [  0, 1.0,   0], # green
-  [1.0, 1.0,   0], # yellow
-  [1.0,   0,   0]  # red
-]
+SeriesSelector = require './components/series-selector'
+utils = require './utils'
 
 # Also used with the colour function
-_maxDataVal = 0
+_seriesWithMaxDataVal = ''
+_seriesMaximums = {} # format: { <name>: <max val> }
 
 module.exports =
   createGlobe: ( container, texture ) ->
@@ -80,6 +75,16 @@ class Globe
     @rotation = { x: 0, y: 0 }
     @target = { x: Math.PI*1.7, y: Math.PI / 5.0 }
     @targetOnDown = { x: 0, y: 0 }
+
+    @seriesGeos = {}
+
+    # Properties for the Legend. Object is of the form:
+    # [
+    #   { name: <str>, numHits: <num> },
+    #   ...
+    # ]
+    @_legendState = []
+    @_totalHits = 0
 
     @distance = 100000
     @distanceTarget = 100000
@@ -162,28 +167,41 @@ class Globe
     # get ready for our colour function
     _setMaxDataVal data
 
-    colorFnWrapper = (data, i) -> return _colorFn(data[i+2])
+    colorFnWrapper = (data, i) ->
+      colourVals = utils.colourMap( data[i+2], _seriesMaximums[ _seriesWithMaxDataVal ] )
+      return new THREE.Color( colourVals.r, colourVals.g, colourVals.b )
 
-    subgeo = new THREE.Geometry()
+    @_legendState = []
+    @_totalHits = 0
 
     for series in data
+      subgeo = new THREE.Geometry()
+      seriesTotal = 0
       for point, i in series[1] by 3
         lat = series[1][i]
         lng = series[1][i + 1]
         color = colorFnWrapper(series[1],i)
+        seriesTotal += series[1][i+2]
         @addPoint(lat, lng, 0, color, subgeo)
 
-    @_baseGeometry = subgeo
-    return
+      # Add to our Legend state
+      @_legendState.push
+        name: series[0]
+        numHits: seriesTotal
+      @_totalHits += seriesTotal
 
-  createPoints: ->
-    if @_baseGeometry?
-      @points = new THREE.Mesh( @_baseGeometry, new THREE.MeshBasicMaterial
+      # Add to our list of series geometries
+      points = new THREE.Mesh( subgeo, new THREE.MeshBasicMaterial
         color: 0xffffff
         vertexColors: THREE.FaceColors
-        morphTargets: false
+        morphTargets: false,
+        transparent: true,
+        opacity: 1.0
       )
-      @scene.add @points
+      @seriesGeos[ series[0] ] = points
+      @scene.add points
+
+    return
 
   addPoint: (lat, lng, size, color, subgeo) ->
     phi = (90 - lat) * Math.PI / 180
@@ -204,6 +222,16 @@ class Globe
     # Note: this method was introduced in r70 but is only documented in the
     # release notes. Hopefully it will stick around and not break in the future
     subgeo.mergeMesh @point
+
+  initLegend: ->
+    React.render(
+      React.createElement( SeriesSelector,
+        series: @_legendState
+        totalHits: @_totalHits
+        toggleHandler: @onLegendToggle
+      )
+      document.getElementById 'series-selector'
+    )
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Event Handlers
@@ -267,6 +295,22 @@ class Globe
 
     return false
 
+  onLegendToggle: ( name, active ) =>
+    startVal = 0.0
+    endVal = 1.0
+
+    if !active
+      startVal = 1.0
+      endVal = 0.0
+
+    mat = @seriesGeos[ name ].material
+    tween = new TWEEN.Tween( {x: startVal} ).to( {x: endVal}, 500 )
+    tween.onUpdate ->
+      mat.opacity = @x
+    tween.start()
+
+    # TODO: recalculate all point colours based on the (potentially) new max data val
+
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Render-related Methods
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -296,39 +340,23 @@ class Globe
 
     @renderer.render( @scene, @camera )
 
+    # Update any in-flight tweens
+    TWEEN.update()
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Private Helper Methods
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Logic for this function inspired by:
-# http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradients
-_colorFn = (x) ->
-  x = x / _maxDataVal
-
-  fractBetween = 0
-  if x <= 0
-    idx1 = 0
-    idx2 = 0
-  else if x >= 1
-    idx1 = COLOURS.length - 1
-    idx2 = COLOURS.length - 1
-  else
-    x = x * (COLOURS.length-1)
-    idx1 = Math.floor x
-    idx2 = idx1 + 1
-    fractBetween = x - idx1
-
-  r = ( COLOURS[idx2][0] - COLOURS[idx1][0] ) * fractBetween + COLOURS[idx1][0]
-  g = ( COLOURS[idx2][1] - COLOURS[idx1][1] ) * fractBetween + COLOURS[idx1][1]
-  b = ( COLOURS[idx2][2] - COLOURS[idx1][2] ) * fractBetween + COLOURS[idx1][2]
-
-  return new THREE.Color( r*255, g*255, b*255 )
-
 # helper function to find the max value in an array of data (used for colour
 # interpolation in the colorFn)
-_setMaxDataVal = ( data, format ) ->
-  series = []
+_setMaxDataVal = ( data ) ->
+  currMax = 0
   for subArr in data
-    series.push( Math.max.apply( Math, subArr[1] ) )
+    seriesMax = Math.max.apply( Math, subArr[1] )
+    _seriesMaximums[ subArr[0] ] = seriesMax
 
-  _maxDataVal = Math.max.apply( Math, series )
+    if seriesMax > currMax
+      currMax = seriesMax
+      _seriesWithMaxDataVal = subArr[0]
+
+  return

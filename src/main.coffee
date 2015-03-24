@@ -8,7 +8,7 @@ $ ->
   else
     # Fetch data from the server
     $.ajax
-      url: 'data-magnitude.json'
+      url: 'http://cymon.io/api/publicajax/nexus/globe/?categories=1'
       dataType: 'json'
       error: ( jqXHR, textStatus, errorThrown ) ->
         alert "Could not load data. Reason: #{textStatus}"
@@ -18,8 +18,8 @@ $ ->
         THREE.ImageUtils.loadTexture( '../img/map2.jpg', undefined, ( texture ) ->
           globe = DAT.createGlobe container, texture
 
-          globe.addData response
-          globe.createPoints()
+          globe.addData response.data
+          globe.initLegend()
           doAnimate()
         )
 

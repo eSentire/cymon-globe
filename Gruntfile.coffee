@@ -71,4 +71,4 @@ module.exports = ( grunt ) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-clean'
 
-  grunt.registerTask 'default', [ 'clean', 'coffee', 'browserify:production', 'uglify' ]
+  grunt.registerTask 'default', [ 'clean', 'cjsx', 'coffee', 'browserify:production', 'uglify' ]
