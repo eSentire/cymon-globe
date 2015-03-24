@@ -8,6 +8,7 @@
 # You may obtain a copy of the License at
 #
 # http://www.apache.org/licenses/LICENSE-2.0
+TWEEN = require 'tween.js'
 
 SeriesSelector = require './components/series-selector'
 utils = require './utils'
@@ -193,7 +194,9 @@ class Globe
       points = new THREE.Mesh( subgeo, new THREE.MeshBasicMaterial
         color: 0xffffff
         vertexColors: THREE.FaceColors
-        morphTargets: false
+        morphTargets: false,
+        transparent: true,
+        opacity: 1.0
       )
       @seriesGeos[ series[0] ] = points
       @scene.add points
@@ -293,12 +296,19 @@ class Globe
     return false
 
   onLegendToggle: ( name, active ) =>
-    if !active
-      @scene.remove @seriesGeos[ name ]
-    else
-      @scene.add @seriesGeos[ name ]
+    startVal = 0.0
+    endVal = 1.0
 
-    # TODO: tween the add/remove... for coolness
+    if !active
+      startVal = 1.0
+      endVal = 0.0
+
+    mat = @seriesGeos[ name ].material
+    tween = new TWEEN.Tween( {x: startVal} ).to( {x: endVal}, 500 )
+    tween.onUpdate ->
+      mat.opacity = @x
+    tween.start()
+
     # TODO: recalculate all point colours based on the (potentially) new max data val
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -329,6 +339,9 @@ class Globe
     @camera.lookAt @mesh.position
 
     @renderer.render( @scene, @camera )
+
+    # Update any in-flight tweens
+    TWEEN.update()
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Private Helper Methods
