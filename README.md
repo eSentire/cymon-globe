@@ -35,3 +35,4 @@ To have it watch for changes and automatically rebuild.
 * [ ] When two or more categories have a point at the same lat/long (with a certain fuzz factor), rather than overlaying the multiple points be smarter and add their values together
 * [ ] Re-evaluate colour thresholds for data points. Using the max value in the data skews everything to the low-end due to having just a couple outliers
 * [ ] Re-evaluate colours for the heatmap. Fully saturated red, green, and blue as the interval points is a bit... boring
+* [ ] Hook up touch/pointer events for tablets
