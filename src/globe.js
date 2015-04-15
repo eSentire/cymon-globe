@@ -9,8 +9,7 @@
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 
-// Keep this in CommonJS syntax as third-party libraries aren't necessarily es6
-var TWEEN = require( 'tween.js' );
+import * as TWEEN from 'tween.js';
 
 import SeriesSelector from './components/series-selector.jsx';
 import * as utils from './utils';
