@@ -329,7 +329,7 @@ class Globe {
 
     let mat = this.seriesGeos[ name ].material;
     let tween = new TWEEN.Tween( {x: startVal} ).to( {x: endVal}, 500 );
-    tween.onUpdate( () => {
+    tween.onUpdate( function() {
       mat.opacity = this.x;
     });
     tween.start();
