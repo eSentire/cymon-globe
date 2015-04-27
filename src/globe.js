@@ -9,7 +9,7 @@
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 
-import * as TWEEN from 'tween.js';
+import TWEEN from 'tween.js';
 import React from 'react';
 
 import SeriesSelector from './components/series-selector.jsx';
@@ -152,14 +152,14 @@ class Globe {
 
     this.container.appendChild(this.renderer.domElement);
 
-    this.container.addEventListener('mousemove', this.onMouseMove, false);
-    this.container.addEventListener('mouseup', this.onMouseUp, false);
-    this.container.addEventListener('mouseout', this.onMouseOut, false);
-    this.container.addEventListener('mousedown', this.onMouseDown, false);
-    this.container.addEventListener('mousewheel', this.onMouseWheel, false);
+    this.container.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+    this.container.addEventListener('mouseup', this.onMouseUp.bind(this), false);
+    this.container.addEventListener('mouseout', this.onMouseOut.bind(this), false);
+    this.container.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+    this.container.addEventListener('mousewheel', this.onMouseWheel.bind(this), false);
     // firefox mouse wheel handler
     this.container.addEventListener( 'DOMMouseScroll', (e) => {
-      evt = window.event || e;
+      let evt = window.event || e;
       this.onMouseWheel( evt );
     }, false );
 
@@ -243,7 +243,7 @@ class Globe {
       React.createElement( SeriesSelector, {
         series: this._legendState,
         totalHits: this._totalHits,
-        toggleHandler: this.onLegendToggle
+        toggleHandler: this.onLegendToggle.bind( this )
       }),
       document.getElementById( 'series-selector' )
     );
