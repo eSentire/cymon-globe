@@ -1,5 +1,6 @@
 // Main component for the interactive series selector
 import SeriesItem from './series-item.jsx';
+import React from 'react';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Component definitions
@@ -64,12 +65,13 @@ export default class SeriesSelector extends React.Component {
     });
 
     /* jshint ignore: start */
-    <div>
+    return( <div>
       <h2 style={this.headerStyle}>Threat Types</h2>
       <ul style={this.seriesListStyle}>
         { this.props.series.map( ( item ) => {
           let itemProps = {
             name: item.name,
+            key: item.name,
             percentage: Math.floor( (item.numHits / activeHits) * 100 ),
             active: this.state[item.name],
             toggleHandler: this.handleSeriesItemToggle.bind( this, item.name )
@@ -78,7 +80,7 @@ export default class SeriesSelector extends React.Component {
         })
         }
       </ul>
-    </div>
+    </div> );
     /* jshint ignore: end */
   }
 }

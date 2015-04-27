@@ -1,5 +1,6 @@
 // Component representing an individual series
 import * as utils from '../utils';
+import React from 'react';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // <SeriesItem /> Component definition
@@ -71,10 +72,11 @@ export default class SeriesItem extends React.Component {
     }
 
     /* jshint ignore: start */
+    return(
     <li style={this.seriesItemStyle} className="series">
       <span style={this.seriesToggleLinkStyle} onClick={this.props.toggleHandler} role="checkbox" aria-checked={this.props.active}>{this.props.name}</span>
       <div style={this.progressBarStyle} aria-value-now={ariaValue} aria-value-min="0" aria-value-max="100"></div>
-    </li>
+    </li> );
     /* jshint ignore: end */
   }
 }

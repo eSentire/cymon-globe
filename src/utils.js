@@ -28,9 +28,9 @@ export function colourMap( x, maxVal ) {
     fractBetween = x - idx1;
   }
 
-  r = ( COLOURS[idx2][0] - COLOURS[idx1][0] ) * fractBetween + COLOURS[idx1][0];
-  g = ( COLOURS[idx2][1] - COLOURS[idx1][1] ) * fractBetween + COLOURS[idx1][1];
-  b = ( COLOURS[idx2][2] - COLOURS[idx1][2] ) * fractBetween + COLOURS[idx1][2];
+  let r = ( COLOURS[idx2][0] - COLOURS[idx1][0] ) * fractBetween + COLOURS[idx1][0];
+  let g = ( COLOURS[idx2][1] - COLOURS[idx1][1] ) * fractBetween + COLOURS[idx1][1];
+  let b = ( COLOURS[idx2][2] - COLOURS[idx1][2] ) * fractBetween + COLOURS[idx1][2];
 
   return {
     r: Math.floor( r*255 ),

@@ -10,6 +10,7 @@
 // http://www.apache.org/licenses/LICENSE-2.0
 
 import * as TWEEN from 'tween.js';
+import React from 'react';
 
 import SeriesSelector from './components/series-selector.jsx';
 import * as utils from './utils';
